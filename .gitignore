@@ -36,3 +36,7 @@ html/
 *.txt
 Documentation/
 *.tags*
+*.bin
+*.elf
+*.hex
+*.lst
