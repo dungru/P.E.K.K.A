@@ -53,6 +53,7 @@ LDFLAGS += -T $(PROJECT_PATH)/STM32F429ZITx_FLASH.ld
 
 #Include file
 CFLAGS += -DSTM32F429xx
+CFLAGS += -DHAL_UART_MODULE_ENABLED
 CFLAGS += -I ./Inc                                                           \
           -I ../../Platform/STM32Cube_FW_F4/Drivers/STM32F4xx_HAL_Driver/Inc \
           -I ../../Platform/STM32Cube_FW_F4/Drivers/CMSIS/Device/ST/STM32F4xx/Include \
