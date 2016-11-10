@@ -39,24 +39,12 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-/** @addtogroup STM32F4xx_HAL_Examples
-  * @{
-  */
-
-/** @addtogroup GPIO_EXTI
-  * @{
-  */ 
-void uart1_puts(char* s);
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-UART_HandleTypeDef UartHandle;
 /* Buffer used for transmission */
-uint8_t aTxBuffer[] = " ****UART_TwoBoards_ComIT****  ****UART_TwoBoards_ComIT****  ****UART_TwoBoards_ComIT**** ";
 
-/* Buffer used for reception */
-uint8_t aRxBuffer[RXBUFFERSIZE];
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
 static void Error_Handler(void);
@@ -96,7 +84,7 @@ int main(void)
   
   /* Configure EXTI Line0 (connected to PA0 pin) in interrupt mode */
   EXTILine0_Config();
-  
+  BSP_LED_Toggle(LED3); //Green
   /* Infinite loop */
 #if 0
   while (1)
@@ -108,35 +96,26 @@ int main(void)
   }
 #endif
 
-    RCC_Configuration();
-    GPIO_Configuration();
-    USART1_Configuration();
+    HAL_UART_MspInit_User(&UartHandle);
 #if 1
     uart1_puts("Hello World!\r\n");
     uart1_puts("Just for STM32F429I Discovery verify USART1 with USB TTL Cable\r\n");
     while(1)
     {
         while(__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_RXNE) == RESET);
-
         uint8_t t;
         HAL_UART_Receive(&UartHandle, &t, 1, 5000);
-        
         if ((t == '\r')) {
             while(__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_TXE) == RESET);
               HAL_UART_Transmit(&UartHandle, &t, 1, 5000);
             t = '\n';
         }
-        
         while(__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_TXE) == RESET);
         HAL_UART_Transmit(&UartHandle, &t, 1, 5000);
     }
 #endif
 }
-/**
-  * @brief  Retargets the C library printf function to the USART.
-  * @param  None
-  * @retval None
-  */
+
 #if 0
 PUTCHAR_PROTOTYPE
 {
@@ -280,78 +259,5 @@ void assert_failed(uint8_t* file, uint32_t line)
   }
 }
 #endif
-
-
-static void RCC_Configuration(void)
-{
-      /* --------------------------- System Clocks Configuration -----------------*/
-      /* GPIOA clock enable */
-      __HAL_RCC_GPIOA_CLK_ENABLE();
-      /* USART1 clock enable */
-      __HAL_RCC_USART1_CLK_ENABLE();
-}
- 
-/**************************************************************************************/
- 
-static void GPIO_Configuration(void)
-{
-    GPIO_InitTypeDef GPIO_InitStructure;
-
-    /*-------------------------- GPIO Configuration ----------------------------*/
-    GPIO_InitStructure.Pin = GPIO_PIN_9;
-    GPIO_InitStructure.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStructure.Alternate = GPIO_AF7_USART1;
-    GPIO_InitStructure.Pull = GPIO_NOPULL;
-    GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-    GPIO_InitStructure.Pin = GPIO_PIN_10;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-}
- 
-/**************************************************************************************/
-static void USART1_Configuration(void)
-{
-    /*##-1- Configure the UART peripheral ######################################*/
-    /* Put the USART peripheral in the Asynchronous mode (UART Mode) */
-    /* UART1 configured as follow:
-        - Word Length = 8 Bits
-        - Stop Bit = One Stop bit
-        - Parity = None
-        - BaudRate = 115200 baud
-        - Hardware flow control disabled (RTS and CTS signals) */
-    UartHandle.Instance          = USART1;
-    UartHandle.Init.BaudRate     = 115200;
-    UartHandle.Init.WordLength   = UART_WORDLENGTH_8B;
-    UartHandle.Init.StopBits     = UART_STOPBITS_1;
-    UartHandle.Init.Parity       = UART_PARITY_NONE;
-    UartHandle.Init.HwFlowCtl    = UART_HWCONTROL_NONE;
-    UartHandle.Init.Mode         = UART_MODE_TX_RX;
-    UartHandle.Init.OverSampling = UART_OVERSAMPLING_16;
-      
-    if(HAL_UART_Init(&UartHandle) != HAL_OK)
-    {
-      Error_Handler();
-    }
-    __HAL_UART_ENABLE(&UartHandle);
-}
-#if 1
-void uart1_puts(char* s)
-{
-    while(*s) {
-        while(__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_TXE) == RESET);
-        HAL_UART_Transmit(&UartHandle, (uint8_t *)s, 1, 5000);
-        s++;
-    }
-}
-#endif
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

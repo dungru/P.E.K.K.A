@@ -67,9 +67,10 @@ ASSEMBLY_SOURCE = $(PROJECT_PATH)/Src/startup_stm32f429xx.s
 #My Project
 CSOURCE += $(PROJECT_PATH)/Src/main.c \
 	   $(PROJECT_PATH)/Src/stm32f4xx_it.c \
-	   $(PROJECT_PATH)/Src/system_stm32f4xx.c 
+	   $(PROJECT_PATH)/Src/system_stm32f4xx.c \
+	   $(PROJECT_PATH)/Src/stm32f4xx_hal_msp.c
 #	   $(PROJECT_PATH)/Src/syscalls.c 
-#	   $(PROJECT_PATH)/Src/stm32f4xx_hal_msp.c
+	   
 # Platform DIR
 CSOURCE += $(PLATFORM_PATH)/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c \
            $(PLATFORM_PATH)/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c \
@@ -111,15 +112,16 @@ $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 flash:
-		openocd \
-		-f interface/stlink-v2.cfg \
-		-f target/stm32f4x_stlink.cfg \
-		-c "init" \
-		-c "reset init" \
-		-c "flash probe 0" \
-		-c "flash info 0" \
-		-c "flash write_image erase $(BIN_IMAGE) 0x8000000" \
-		-c "reset run" -c shutdown || \
+		# openocd \
+		# -f interface/stlink-v2.cfg \
+		# -f target/stm32f4x_stlink.cfg \
+		# -c "init" \
+		# -c "reset init" \
+		# -c "flash probe 0" \
+		# -c "flash info 0" \
+		# -c "flash write_image erase $(BIN_IMAGE) 0x8000000" \
+		# -c "reset run" -c shutdown || \
+
 	st-flash write $(BIN_IMAGE) 0x8000000
 #clean stage
 .PHONY: clean

@@ -37,8 +37,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stm32f4xx_hal_uart.h"
-
 /** @addtogroup STM32F4xx_HAL_Examples
   * @{
   */
@@ -53,23 +51,13 @@
 /* User can use this section to tailor USARTx/UARTx instance used and associated 
    resources */
 /* Definition for USARTx clock resources */
-#define USARTx                           USART1
-#define USARTx_CLK_ENABLE()              __HAL_RCC_USART1_CLK_ENABLE();
-#define USARTx_RX_GPIO_CLK_ENABLE()      __HAL_RCC_GPIOA_CLK_ENABLE()
-#define USARTx_TX_GPIO_CLK_ENABLE()      __HAL_RCC_GPIOA_CLK_ENABLE() 
-
-#define USARTx_FORCE_RESET()             __HAL_RCC_USART1_FORCE_RESET()
-#define USARTx_RELEASE_RESET()           __HAL_RCC_USART1_RELEASE_RESET()
-
-/* Definition for USARTx Pins */
-#define USARTx_TX_PIN                    GPIO_PIN_9
-#define USARTx_TX_GPIO_PORT              GPIOA  
-#define USARTx_TX_AF                     GPIO_AF7_USART1
-#define USARTx_RX_PIN                    GPIO_PIN_10
-#define USARTx_RX_GPIO_PORT              GPIOA 
-#define USARTx_RX_AF                     GPIO_AF7_USART1
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+UART_HandleTypeDef UartHandle;
+uint8_t aTxBuffer[] = " ****UART_TwoBoards_ComIT****  ****UART_TwoBoards_ComIT****  ****UART_TwoBoards_ComIT**** ";
+
+/* Buffer used for reception */
+uint8_t aRxBuffer[RXBUFFERSIZE];
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -85,32 +73,47 @@
   * @param huart: UART handle pointer
   * @retval None
   */
-void HAL_UART_MspInit(UART_HandleTypeDef *huart)
+void HAL_UART_MspInit_User(UART_HandleTypeDef *huart)
 {  
-  GPIO_InitTypeDef  GPIO_InitStruct;
-  
-  /*##-1- Enable peripherals and GPIO Clocks #################################*/
-  /* Enable GPIO TX/RX clock */
-  USARTx_TX_GPIO_CLK_ENABLE();
-  USARTx_RX_GPIO_CLK_ENABLE();
-  /* Enable USART1 clock */
-  USARTx_CLK_ENABLE(); 
-  
-  /*##-2- Configure peripheral GPIO ##########################################*/  
-  /* UART TX GPIO pin configuration  */
-  GPIO_InitStruct.Pin       = USARTx_TX_PIN;
-  GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull      = GPIO_PULLUP;
-  GPIO_InitStruct.Speed     = GPIO_SPEED_FAST;
-  GPIO_InitStruct.Alternate = USARTx_TX_AF;
-  
-  HAL_GPIO_Init(USARTx_TX_GPIO_PORT, &GPIO_InitStruct);
+    GPIO_InitTypeDef  GPIO_InitStruct;
     
-  /* UART RX GPIO pin configuration  */
-  GPIO_InitStruct.Pin = USARTx_RX_PIN;
-  GPIO_InitStruct.Alternate = USARTx_RX_AF;
+    /*##-1- Enable peripherals and GPIO Clocks #################################*/
+    /* Enable GPIO TX/RX clock */
+    USARTx_RX_GPIO_CLK_ENABLE();
+    USARTx_TX_GPIO_CLK_ENABLE();
+    /* Enable USART1 clock */
+    USARTx_CLK_ENABLE(); 
     
-  HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &GPIO_InitStruct);
+    /*##-2- Configure peripheral GPIO ##########################################*/  
+    /* UART TX GPIO pin configuration  */
+    GPIO_InitStruct.Pin       = USARTx_TX_PIN;
+    GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull      = GPIO_NOPULL;
+    GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Alternate = USARTx_TX_AF;
+    HAL_GPIO_Init(USARTx_TX_GPIO_PORT, &GPIO_InitStruct);
+      
+    /* UART RX GPIO pin configuration  */
+    GPIO_InitStruct.Pin = GPIO_PIN_10;
+    GPIO_InitStruct.Alternate = USARTx_RX_AF;
+    HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &GPIO_InitStruct);
+
+    /*##-3- Configure UART1 ##########################################*/ 
+    huart->Instance          = USART1;
+    huart->Init.BaudRate     = 115200;
+    huart->Init.WordLength   = UART_WORDLENGTH_8B;
+    huart->Init.StopBits     = UART_STOPBITS_1;
+    huart->Init.Parity       = UART_PARITY_NONE;
+    huart->Init.HwFlowCtl    = UART_HWCONTROL_NONE;
+    huart->Init.Mode         = UART_MODE_TX_RX;
+    huart->Init.OverSampling = UART_OVERSAMPLING_16;
+      
+    if(HAL_UART_Init(huart) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    __HAL_UART_ENABLE(huart);
+
 }
 
 /**
@@ -121,7 +124,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
   * @param huart: UART handle pointer
   * @retval None
   */
-void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
+void HAL_UART_MspDeInit_User(UART_HandleTypeDef *huart)
 {
   /*##-1- Reset peripherals ##################################################*/
   USARTx_FORCE_RESET();
@@ -135,16 +138,22 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 
 }
 
-/**
-  * @}
-  */
+void uart1_puts(char* s)
+{
+    while(*s) {
+        while(__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_TXE) == RESET);
+        HAL_UART_Transmit(&UartHandle, (uint8_t *)s, 1, 5000);
+        s++;
+    }
+}
 
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
+static void Error_Handler(void)
+{
+  while(1)
+  {
+    BSP_LED_Toggle(LED3);
+    HAL_Delay(500);
+  }
+}
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

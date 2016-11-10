@@ -46,6 +46,7 @@
 #include "stdio.h"
 #include "stm32f4xx_hal_cortex.h"
 #include "stm32f429xx.h"
+#include "stm32f4xx_hal_msp.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
