@@ -98,7 +98,7 @@ int main(void)
 #endif
 
     HAL_UART_MspInit_User(&UartHandle);
-#if 1
+
     printf("Hello World!\r\n");
     printf("For STM32F429I Discovery verify USART1 with USB TTL Cable by printf\n");
     printf("%s\n", str);
@@ -115,7 +115,6 @@ int main(void)
         while(__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_TXE) == RESET);
         HAL_UART_Transmit(&UartHandle, &t, 1, 5000);
     }
-#endif
 }
 
 
