@@ -147,7 +147,7 @@ void uart1_puts(char* s)
     }
 }
 
-#if 1
+
 PUTCHAR_PROTOTYPE
 {
   /* Place your implementation of fputc here */
@@ -157,7 +157,7 @@ PUTCHAR_PROTOTYPE
 
   return ch;
 }
-#endif
+
 
 static void Error_Handler(void)
 {
