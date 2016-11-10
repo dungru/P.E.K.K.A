@@ -66,6 +66,7 @@ int main(void)
      IOs (connected to LED3 on STM32F429i-Discovery board) 
     in an infinite loop.
     To proceed, 3 steps are required: */
+  char str[]= "I m variables";
 
   /* STM32F4xx HAL library initialization:
        - Configure the Flash prefetch, instruction and Data caches
@@ -98,8 +99,9 @@ int main(void)
 
     HAL_UART_MspInit_User(&UartHandle);
 #if 1
-    uart1_puts("Hello World!\r\n");
-    uart1_puts("Just for STM32F429I Discovery verify USART1 with USB TTL Cable\r\n");
+    printf("Hello World!\r\n");
+    printf("For STM32F429I Discovery verify USART1 with USB TTL Cable by printf\n");
+    printf("%s\n", str);
     while(1)
     {
         while(__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_RXNE) == RESET);
@@ -116,16 +118,7 @@ int main(void)
 #endif
 }
 
-#if 0
-PUTCHAR_PROTOTYPE
-{
-  /* Place your implementation of fputc here */
-  /* e.g. write a character to the EVAL_COM1 and Loop until the end of transmission */
-  HAL_UART_Transmit(&UartHandle, (uint8_t *)&ch, 1, 0xFFFF); 
 
-  return ch;
-}
-#endif
 /**
   * @brief  System Clock Configuration
   *         The system Clock is configured as follow : 

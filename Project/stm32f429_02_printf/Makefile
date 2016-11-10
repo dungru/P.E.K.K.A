@@ -68,8 +68,8 @@ ASSEMBLY_SOURCE = $(PROJECT_PATH)/Src/startup_stm32f429xx.s
 CSOURCE += $(PROJECT_PATH)/Src/main.c \
 	   $(PROJECT_PATH)/Src/stm32f4xx_it.c \
 	   $(PROJECT_PATH)/Src/system_stm32f4xx.c \
-	   $(PROJECT_PATH)/Src/stm32f4xx_hal_msp.c
-#	   $(PROJECT_PATH)/Src/syscalls.c 
+	   $(PROJECT_PATH)/Src/stm32f4xx_hal_msp.c \
+	   $(PROJECT_PATH)/Src/syscalls.c 
 	   
 # Platform DIR
 CSOURCE += $(PLATFORM_PATH)/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c \

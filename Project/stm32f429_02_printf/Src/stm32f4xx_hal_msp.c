@@ -147,6 +147,18 @@ void uart1_puts(char* s)
     }
 }
 
+#if 1
+PUTCHAR_PROTOTYPE
+{
+  /* Place your implementation of fputc here */
+  /* e.g. write a character to the EVAL_COM1 and Loop until the end of transmission */
+  while(__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_TXE) == RESET);
+  HAL_UART_Transmit(&UartHandle, (uint8_t *)&ch, 1, 0xFFFF); 
+
+  return ch;
+}
+#endif
+
 static void Error_Handler(void)
 {
   while(1)
