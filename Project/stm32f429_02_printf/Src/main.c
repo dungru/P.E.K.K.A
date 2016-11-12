@@ -52,9 +52,7 @@ static void EXTILine0_Config(void);
 static void RCC_Configuration(void);
 static void GPIO_Configuration(void);
 static void USART1_Configuration(void);
-
 /* Private functions ---------------------------------------------------------*/
-
 /**
   * @brief  Main program
   * @param  None
@@ -66,7 +64,7 @@ int main(void)
      IOs (connected to LED3 on STM32F429i-Discovery board) 
     in an infinite loop.
     To proceed, 3 steps are required: */
-  char str[]= "I m variables";
+  char str[TXBUFFERSIZE]= "I m variables\n\r";
 
   /* STM32F4xx HAL library initialization:
        - Configure the Flash prefetch, instruction and Data caches
@@ -85,7 +83,9 @@ int main(void)
   
   /* Configure EXTI Line0 (connected to PA0 pin) in interrupt mode */
   EXTILine0_Config();
+
   BSP_LED_Toggle(LED3); //Green
+
   /* Infinite loop */
 #if 0
   while (1)
@@ -98,10 +98,21 @@ int main(void)
 #endif
 
     HAL_UART_MspInit_User(&UartHandle);
+#if HAL_MSP_UART_DMA_ENABLED
+    if(HAL_UART_Transmit_DMA(&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE)!= HAL_OK)
+    {
+      Error_Handler();
+    }
 
+    if(HAL_UART_Transmit_DMA(&UartHandle, (uint8_t*)str, TXBUFFERSIZE)!= HAL_OK)
+    {
+      Error_Handler();
+    }
+#else
     printf("Hello World!\r\n");
-    printf("For STM32F429I Discovery verify USART1 with USB TTL Cable by printf\n");
+    printf("For STM32F429I Discovery verify USART1 with USB TTL Cable by printf\r\n");
     printf("%s\n", str);
+#if 0
     while(1)
     {
         while(__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_RXNE) == RESET);
@@ -115,6 +126,9 @@ int main(void)
         while(__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_TXE) == RESET);
         HAL_UART_Transmit(&UartHandle, &t, 1, 5000);
     }
+#endif
+#endif /* HAL_MSP_UART_DMA_ENABLED */
+
 }
 
 

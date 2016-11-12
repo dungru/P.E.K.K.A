@@ -80,7 +80,7 @@
 /* #define HAL_SD_MODULE_ENABLED         */
 #define HAL_SPI_MODULE_ENABLED       
 /* #define HAL_TIM_MODULE_ENABLED        */  
-/* #define HAL_UART_MODULE_ENABLED      */
+#define HAL_UART_MODULE_ENABLED     
 /* #define HAL_USART_MODULE_ENABLED    */ 
 /* #define HAL_IRDA_MODULE_ENABLED      */
 /* #define HAL_SMARTCARD_MODULE_ENABLED  */
@@ -89,6 +89,8 @@
 /*#define HAL_PCD_MODULE_ENABLED*/
 /*#define HAL_HCD_MODULE_ENABLED*/
 
+/* ########################## User Proprietary Defined ############################## */
+#define HAL_MSP_UART_DMA_ENABLED 1
 
 /* ########################## HSE/HSI Values adaptation ##################### */
 /**
