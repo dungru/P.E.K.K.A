@@ -4,6 +4,7 @@ PLATFORM_PACKAGE = Platform/STM32Cube_FW_F4/Drivers
 PROJECT_PATH := $(shell dirname $(realpath $(MAKEFILE_LIST)))
 ROOT_PATH := $(subst /Project,,$(shell dirname $(PROJECT_PATH)))
 PLATFORM_PATH = $(ROOT_PATH)/$(PLATFORM_PACKAGE)
+MIDDLEWARE_PATH = $(ROOT_PATH)/Middlewares
 EXECUTABLE = $(PROJECT).elf
 BIN_IMAGE = $(PROJECT).bin
 HEX_IMAGE = $(PROJECT).hex
@@ -67,8 +68,8 @@ ASSEMBLY_SOURCE = $(PROJECT_PATH)/Src/startup_stm32f429xx.s
 CSOURCE += $(PROJECT_PATH)/Src/main.c \
 	   $(PROJECT_PATH)/Src/stm32f4xx_it.c \
 	   $(PROJECT_PATH)/Src/system_stm32f4xx.c \
-	   $(PROJECT_PATH)/Src/stm32f4xx_hal_msp.c \
-	   $(PROJECT_PATH)/Src/syscalls.c 
+	   $(PROJECT_PATH)/Src/stm32f4xx_hal_msp.c
+#CSOURCE +=	   $(PROJECT_PATH)/Src/syscalls.c 
 	   
 # Platform DIR
 CSOURCE += $(PLATFORM_PATH)/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c \
@@ -85,7 +86,9 @@ CSOURCE += $(PLATFORM_PATH)/BSP/STM32F429I-Discovery/stm32f429i_discovery.c \
 
 
 # Middleware DIR
-
+CSOURCE += $(MIDDLEWARE_PATH)/Utilities/printf/printf.c
+CFLAGS += -DPRINTF_LONG_SUPPORT
+CFLAGS += -I ../../Middlewares/Utilities/printf
 ##### OBJECTS #####
 OBJECTS = $(patsubst %.s, %.o, $(ASSEMBLY_SOURCE))
 OBJECTS += $(patsubst %.c, %.o, $(CSOURCE))

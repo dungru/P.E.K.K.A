@@ -43,10 +43,14 @@
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_uart.h"
 #include "stm32f429i_discovery.h"
-#include "stdio.h"
 #include "stm32f4xx_hal_cortex.h"
 #include "stm32f429xx.h"
 #include "stm32f4xx_hal_msp.h"
+#include "printf.h"
+
+#ifdef PRINTF_USE_STDIO_LIB
+#include "stdio.h"
+#endif
 
 #endif /* __MAIN_H */
 

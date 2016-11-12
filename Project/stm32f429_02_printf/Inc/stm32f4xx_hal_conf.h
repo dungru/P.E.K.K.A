@@ -90,7 +90,7 @@
 /*#define HAL_HCD_MODULE_ENABLED*/
 
 /* ########################## User Proprietary Defined ############################## */
-#define HAL_MSP_UART_DMA_ENABLED 1
+#define HAL_MSP_UART_DMA_ENABLED 0
 
 /* ########################## HSE/HSI Values adaptation ##################### */
 /**

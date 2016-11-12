@@ -215,17 +215,15 @@ void HAL_UART_MspDeInit_User(UART_HandleTypeDef *huart)
 #endif
 }
 
-void uart1_puts(char* s)
+
+void uart1_putc( void* p, char ch)
 {
-
-    while(*s) {
-        while(__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_TXE) == RESET);
-        HAL_UART_Transmit(&UartHandle, (uint8_t *)s, 1, 5000);
-        s++;
-    }
-
+    while(__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_TXE) == RESET);
+    HAL_UART_Transmit(&UartHandle, (uint8_t *)&ch, 1, 0xFFFF); 
 }
 
+
+#ifdef PRINTF_USE_STDIO_LIB
 /*int fputc(int ch, FILE *f)*/
 PUTCHAR_PROTOTYPE
 {
@@ -241,7 +239,7 @@ PUTCHAR_PROTOTYPE
 #endif
   return ch;
 }
-
+#endif /* PRINTF_USE_STDIO_LIB */
 
 static void Error_Handler(void)
 {

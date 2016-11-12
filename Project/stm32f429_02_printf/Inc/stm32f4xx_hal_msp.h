@@ -63,7 +63,7 @@
 extern UART_HandleTypeDef UartHandle;
 extern uint8_t aTxBuffer[];
 
-void uart1_puts(char* s);
+void uart1_putc( void* p, char ch);
 void HAL_UART_MspInit_User(UART_HandleTypeDef *huart);
 void HAL_UART_MspDeInit_User(UART_HandleTypeDef *huart);
 static void Error_Handler(void);

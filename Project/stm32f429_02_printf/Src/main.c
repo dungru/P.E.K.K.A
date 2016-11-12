@@ -96,8 +96,10 @@ int main(void)
     HAL_Delay(500);
   }
 #endif
-
+/*Logging System*/
     HAL_UART_MspInit_User(&UartHandle);
+    init_printf(NULL, uart1_putc);
+
 #if HAL_MSP_UART_DMA_ENABLED
     if(HAL_UART_Transmit_DMA(&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE)!= HAL_OK)
     {
@@ -109,8 +111,8 @@ int main(void)
       Error_Handler();
     }
 #else
-    printf("Hello World!\r\n");
-    printf("For STM32F429I Discovery verify USART1 with USB TTL Cable by printf\r\n");
+    printf("Hello World!\n\r");
+    printf("For STM32F429I Discovery verify USART1 with USB TTL Cable by printf\n\r");
     printf("%s\n", str);
 #if 0
     while(1)
