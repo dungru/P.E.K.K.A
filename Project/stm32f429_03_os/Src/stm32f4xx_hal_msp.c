@@ -56,7 +56,7 @@
 UART_HandleTypeDef UartHandle;
 __IO ITStatus UartReady = RESET;
 /* Buffer used for transmission */
-uint8_t aTxBuffer[TXBUFFERSIZE] = "Hello World Uart printf\n\r";
+uint8_t aTxBuffer[TXBUFFERSIZE] = "Hello World Uart DMA mode\n\r";
 
 /* Buffer used for reception */
 uint8_t aRxBuffer[RXBUFFERSIZE];

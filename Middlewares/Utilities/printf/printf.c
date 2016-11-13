@@ -39,7 +39,7 @@ static void* stdout_putp;
 #ifdef PRINTF_LONG_SUPPORT
 
 static void uli2a(unsigned long int num, unsigned int base, int uc,char * bf)
-	{
+{
 	int n=0;
 	unsigned int d=1;
 	while (num/d >= base)
@@ -54,21 +54,21 @@ static void uli2a(unsigned long int num, unsigned int base, int uc,char * bf)
 			}
 		}
 	*bf=0;
-	}
+}
 
 static void li2a (long num, char * bf)
-	{
+{
 	if (num<0) {
 		num=-num;
 		*bf++ = '-';
 		}
 	uli2a(num,10,0,bf);
-	}
+}
 
 #endif
 
 static void ui2a(unsigned int num, unsigned int base, int uc,char * bf)
-	{
+{
 	int n=0;
 	unsigned int d=1;
 	while (num/d >= base)
@@ -83,19 +83,19 @@ static void ui2a(unsigned int num, unsigned int base, int uc,char * bf)
 			}
 		}
 	*bf=0;
-	}
+}
 
 static void i2a (int num, char * bf)
-	{
+{
 	if (num<0) {
 		num=-num;
 		*bf++ = '-';
 		}
 	ui2a(num,10,0,bf);
-	}
+}
 
 static int a2d(char ch)
-	{
+{
 	if (ch>='0' && ch<='9') 
 		return ch-'0';
 	else if (ch>='a' && ch<='f')
@@ -103,10 +103,10 @@ static int a2d(char ch)
 	else if (ch>='A' && ch<='F')
 		return ch-'A'+10;
 	else return -1;
-	}
+}
 
 static char a2i(char ch, char** src,int base,int* nump)
-	{
+{
 	char* p= *src;
 	int num=0;
 	int digit;
@@ -118,10 +118,10 @@ static char a2i(char ch, char** src,int base,int* nump)
 	*src=p;
 	*nump=num;
 	return ch;
-	}
+}
 
 static void putchw(void* putp,putcf putf,int n, char z, char* bf)
-	{
+{
 	char fc=z? '0' : ' ';
 	char ch;
 	char* p=bf;
@@ -131,10 +131,10 @@ static void putchw(void* putp,putcf putf,int n, char z, char* bf)
 		putf(putp,fc);
 	while ((ch= *bf++))
 		putf(putp,ch);
-	}
+}
 
 void tfp_format(void* putp,putcf putf,char *fmt, va_list va)
-	{
+{
 	char bf[12];
     
 	char ch;
@@ -209,37 +209,37 @@ void tfp_format(void* putp,putcf putf,char *fmt, va_list va)
 			}
 		}
 	abort:;
-	}
+}
 
 
 void init_printf(void* putp,void (*putf) (void*,char))
-	{
+{
 	stdout_putf=putf;
 	stdout_putp=putp;
-	}
+}
 
 void tfp_printf(char *fmt, ...)
-	{
+{
 	va_list va;
 	va_start(va,fmt);
 	tfp_format(stdout_putp,stdout_putf,fmt,va);
 	va_end(va);
-	}
+}
 
 static void putcp(void* p,char c)
-	{
+{
 	*(*((char**)p))++ = c;
-	}
+}
 
 
 
 void tfp_sprintf(char* s,char *fmt, ...)
-	{
+{
 	va_list va;
 	va_start(va,fmt);
 	tfp_format(&s,putcp,fmt,va);
 	putcp(&s,0);
 	va_end(va);
-	}
+}
 
 
