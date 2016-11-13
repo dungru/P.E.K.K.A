@@ -177,7 +177,7 @@ static void LED_Thread1(void const *argument)
     while (count >= osKernelSysTick())
     {
       BSP_LED_Toggle(LED3);
-      printf("I m task 1\n\r");
+      printf("I m task 1 LED3 Green\n\r");
       osDelay(400);
     }
 
@@ -204,7 +204,7 @@ static void LED_Thread2(void const *argument)
     while (count >= osKernelSysTick())
     {
       BSP_LED_Toggle(LED4);
-      printf("I m task 2\n\r");
+      printf("I m task 2222 LED4 Red\n\r");
       osDelay(500);
     }
     
